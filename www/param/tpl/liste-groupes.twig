@@ -1,0 +1,68 @@
+{% extends "base.twig"%}
+
+{% block css %}
+    <style>
+        table {border: solid 5px lightseagreen;
+            border-collapse: collapse;
+            font-size: medium;
+            empty-cells: show;
+        }
+
+        th, td {
+            padding: 2px 8px;
+            border: solid 1px lightseagreen;}
+
+        tr:nth-child(odd) {
+            background-color: #FFC; /* jaune */
+        }
+
+        table img {
+            height: 12px;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function verifSuppression(id) {
+            if (confirm('Voulez-vous vraiment supprimer le groupe "' + id + '"?')) {
+                $.post("/api/deleteGroupe.php", {id: id},)
+                .done(function(){
+                    alert("Suppression effectuée avec succès");
+                    document.location.reload()
+                })
+                .fail(function(xhr, status, error){alert("Une erreur est survenue lors de la suppression du groupe: " + xhr.responseJSON.error)});
+            } else {
+                alert("Supression annulée");
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block contenu %}
+    <p>
+        <a href="?id=new" class="button">Ajouter un groupe</a>
+    </p>
+    <table>
+        <tr>
+            <th>Nom</th>
+            <th>Groupe père</th>
+            <th colspan="2">Actions</th>
+        </tr>
+
+
+        {% for gp in groupes %}
+            <tr>
+                <td>{{ gp.getNom() }}</td>
+                <td>{{ gp.getPere() }}</td>
+
+                <td><a href="?id={{gp.getNom()}}"><img src="/images/edit.png" alt="Modifier le groupe"/></a></td>
+                <!-- deleteUtilisateur.php?id={{gp.getNom()}} -->
+                <td><a href="javascript:verifSuppression('{{gp.getNom()}}')"><img src="/images/delete.jpeg" alt="Supprimer le groupe"/></a></td>
+                <!-- Ajouter bouton pour modifier la row (update)-->
+            </tr>
+        {% endfor %}
+    </table>
+    <pre>{{ var }}</pre>
+
+{% endblock %}

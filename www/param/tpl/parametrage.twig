@@ -1,0 +1,41 @@
+{% extends "base.twig" %}
+
+{% block css %}
+<style>
+    h2, h3, p {
+        text-align: center;
+    }
+
+	h3 {
+		margin: 8px 0;
+	}
+
+    .select {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        max-width: 300px;
+        margin: auto;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block contenu %}
+    <h2>Bienvenue, {{ user.prenom }} {{ user.nom }} !</h2>
+
+	<div class="select">
+		<a class="button" href="utilisateurs.php">Utilisateurs</a>
+		<a class="button" href="evenements.php">Évènements</a>
+		<a class="button" href="groupes.php">Groupes</a>
+		<a class="button" href="modules.php">Modules</a>
+		<a class="button" href="seances.php">Séances</a>
+		<a class="button" href="affectations.php">Affectations</a>
+		<a class="button" href="types_evenement.php">Types d'évènement</a>
+		<a class="button" href="types_seance.php">Types de séance</a>
+		<a class="button" href="javascript:alert('a venir')">Pièces jointes</a>
+	</div>
+
+{% endblock %}
