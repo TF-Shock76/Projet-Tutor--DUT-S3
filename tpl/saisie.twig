@@ -1,0 +1,222 @@
+{% extends "base.twig" %}
+
+{% set maxFiles = (param['PjMaxParEvenement'] == null ? 10 : param['PjMaxParEvenement']) %}
+{% set maxEvent = (param['EvenementMaxParActivite'] == null ? 10 : param['EvenementMaxParActivite']) %}
+
+{% block css %}
+<style>
+    #saisie {
+        padding: 8px;
+    }
+
+    #saisie label {
+        display: inline-block;
+        width: 200px;
+    }
+
+    #saisie input, #saisie select {
+        width: 200px;
+    }
+
+    #saisie input[type="number"] {
+        width: 50px;
+    }
+
+    #saisie input[type="file"] {
+        width: 400px;
+    }
+
+    #saisie > div:not(:last-of-type) {
+        margin-bottom: 8px;
+    }
+
+    .evenement {
+        border: 1px solid silver;
+        margin-bottom: 8px;
+    }
+
+    fieldset {
+        border-radius: 4px;
+    }
+
+    fieldset div div {
+        padding: 4px;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        let max_files = {{ maxFiles }};
+        let max_events = {{ maxEvent }};
+
+        let types = [
+            {% for t in typeEvenements %}
+            { id: {{ t.id }}, nom: "{{ t.libelle }}" },
+            {% endfor %}
+        ];
+
+        $(document).ready(function() {
+            recountEvt();
+        });
+
+        function checkFiles(node) {
+            let count = $(node)[0].files.length;
+
+            if (count > max_files) {
+                alert(`Erreur: Vous pouvez uniquement sélectionner un maximum de ${max_files} fichiers.`);
+                $(node).val(undefined);
+            }
+
+            $(node).parent("div.evenement")
+                .find("input#filecount")
+                .val($(node)[0].files.length);
+        }
+
+        function removeEvent(node) {
+
+            if (confirm("Voulez-vous vraiment supprimer cet évènement?"))
+                $(node).parent("div.evenement").remove();
+
+            recountEvt();
+        }
+
+        function addEvent() {
+            if ($("div.evenement").length >= max_events) {
+                alert("Limite de " + max_events + " évènements atteinte");
+                return;
+            }
+
+            let types_html = "";
+
+            for (const i in types) {
+                types_html += "                            <option value=\""+types[i].id+"\">"+types[i].nom+"</option>\n";
+            }
+
+            $("div#evt_inputs").append("<div id=\"evt0\" class=\"evenement\">\n" +
+                "                    <input type=\"hidden\" id=\"filecount\" name=\"files0\" value=\"0\">\n" +
+                "                    <div class=\"type_e\">\n" +
+                "                        <label for=\"type_e0\">Type d'évènement : </label>\n" +
+                "                        <select name=\"type_e0\" id=\"type_e0\">\n" +
+                types_html +
+                "                        </select>\n" +
+                "                    </div>\n" +
+                "                    <div class=\"libelle\">\n" +
+                "                        <label for=\"libelle0\">Libellé : </label>\n" +
+                "                        <input name=\"libelle0\" id=\"libelle0\">\n" +
+                "                    </div>\n" +
+                "                    <div class=\"pj\">\n" +
+                "                        <label for=\"pj0\">Pièces jointes (max: {{ maxFiles }}): </label>\n" +
+                "                        <input name=\"pj0[]\" id=\"pj0\" type=\"file\" multiple onchange=\"checkFiles(this)\">\n" +
+                "                    </div>\n" +
+                "                    <div class=\"duree\">\n" +
+                "                        <label for=\"duree0\">Durée : </label>\n" +
+                "                        <input name=\"duree0\" id=\"duree0\" class=\"duree\" type=\"number\" min=\"0\" step=\"0.25\" onchange=\"updateHeure(this)\">\n" +
+                "                        heures (<span id=\"duree-heures\">0:00</span>)\n" +
+                "                    </div>\n" +
+                "                    <div class=\"date\">\n" +
+                "                        <label for=\"date0\">Echéance : </label>\n" +
+                "                        <input name=\"date0\" id=\"date0\" type=\"date\">\n" +
+                "                    </div>\n" +
+                "                    <input style=\"margin-top: 8px;\" type=\"button\" onclick=\"removeEvent(this)\" id=\"evt0_del\" value=\"Supprimer l'évènement\">\n" +
+                "                </div>");
+
+            recountEvt();
+        }
+
+        function recountEvt() {
+            let fieldset = $("fieldset#events");
+            let events = fieldset.find("div.evenement");
+            fieldset.find("#eventcount").val(events.length);
+
+            for (let i = 0; i < events.length; i++) {
+                let jq = $(events[i]);
+
+                jq.attr("id", "evt" + i);
+
+                jq.find("div.type_e label").attr("for" , "type_e" + i);
+                jq.find("div.type_e select").attr("name", "type_e" + i);
+                jq.find("div.type_e select").attr("id"  , "type_e" + i);
+
+                jq.find("div.libelle label").attr("for" , "libelle" + i);
+                jq.find("div.libelle input").attr("name", "libelle" + i);
+                jq.find("div.libelle input").attr("id"  , "libelle" + i);
+
+                jq.find("div.pj label").attr("for" , "pj" + i       );
+                jq.find("div.pj input").attr("name", "pj" + i + "[]");
+                jq.find("div.pj input").attr("id"  , "pj" + i       );
+
+                jq.find("div.duree label").attr("for" , "duree" + i);
+                jq.find("div.duree input").attr("name", "duree" + i);
+                jq.find("div.duree input").attr("id"  , "duree" + i);
+
+                jq.find("div.date label").attr("for" , "date" + i);
+                jq.find("div.date input").attr("name", "date" + i);
+                jq.find("div.date input").attr("id"  , "date" + i);
+            }
+
+            if (events.length < 1)
+                $("form input[type='submit']").attr("disabled", "disabled");
+            else
+                $("form input[type='submit']").attr("disabled", false);
+        }
+
+        function updateHeure(node) {
+            let val = $(node).val();
+            let heure = Math.floor(val);
+            let minute = (val - heure) * 60;
+            $(node).parent().find("span#duree-heures")
+                .html(""+heure+":"+(minute < 10 ? "0" + minute : minute));
+        }
+    </script>
+{% endblock %}
+
+{% block contenu %}
+    <form id="saisie" class="block" method="post" action="" enctype="multipart/form-data">
+        <div>
+        <label for="date">Date :</label>
+        <input type="date" name="date" id="date">
+        </div>
+
+        <div>
+        <label for="module">Module : </label>
+        <select name="module" id="module">
+            {% for module in modules %}
+                <option value="{{ module.code }}">{{ module.libelle }}</option>
+            {% endfor %}
+        </select>
+        </div>
+
+        <div>
+        <label for="type_s">Type : </label>
+        <select name="type_s" id="type_s">
+            {% for type in typeSeances %}
+                <option value="{{ type.id }}">{{ type.libelle }}</option>
+            {% endfor %}
+        </select>
+        </div>
+
+        <div>
+            <label for="groupe">Groupe : </label>
+            <select name="groupe" id="groupe">
+                {% for groupe in groupes %}
+                    <option value="{{ groupe }}">{{ groupe }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <fieldset style="padding-bottom: 8px" id="events">
+            <legend>Évènements</legend>
+            <input type="hidden" id="eventcount" name="eventcount" value="0">
+
+            <div id="evt_inputs" style="padding-bottom: 8px">
+            </div>
+
+            <input type="button" onclick="addEvent()" id="evt_new" value="Nouvel évènement">
+            Maximum: {{ maxEvent }}
+        </fieldset>
+
+        <input type="submit" id="submit" value="Enregistrer">
+    </form>
+{% endblock %}

@@ -1,0 +1,193 @@
+/* block */
+.block {
+    margin-bottom: 8px;
+}
+
+/* bloc de mois */
+.month {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.month h2 {
+    text-align: center;
+    flex-basis: 100%;
+    flex-grow: 1;
+    margin: 0 0 8px;
+}
+
+.month input {
+    flex-grow: 1;
+    line-height: 200%;
+}
+
+.month input[data-tag="prev"] {
+    order: 2;
+    margin-right: 5px;
+}
+
+.month input[data-tag="next"] {
+    order: 3;
+    margin-left: 5px;
+}
+
+/* bloc des filtres */
+.filtres {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.filtres input {
+
+}
+
+/* Expanders */
+
+div .hidden {
+    display: none;
+}
+
+div.expanded .hidden {
+    display: grid;
+}
+
+/* Semaines */
+
+.week {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.week .seances {
+    width: 100%;
+}
+
+.week .number{
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+/* Blocs de module */
+
+.info {
+    width: 100%;
+}
+
+.info > .summary {
+    display: flex;
+    flex-wrap: wrap;
+    color: var(--module-color);
+}
+
+.info > .summary > *:not(:last-child) {
+    border-right: 1px solid silver;
+}
+
+.info > .summary * {
+    padding: 2px 4px;
+    flex-basis: 0;
+    flex-grow: 5;
+}
+
+.info > .summary *.small {
+    padding: 2px 4px;
+    flex-basis: 0;
+    flex-grow: 1;
+}
+
+.info a.expander {
+    flex-grow: 0;
+}
+
+/* Checkbox personnalisée */
+.container {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.container input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
+}
+
+.checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 11px;
+	width: 11px;
+	background-color: #AAAAAA;
+}
+
+.container:hover input ~ .checkmark {
+	background-color: #ccc;
+}
+
+.container input:checked ~ .checkmark {
+	background-color: #22BB33;
+}
+
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+.container input:checked ~ .checkmark:after {
+	display: block;
+}
+
+.container .checkmark:after {
+	left: 5px;
+	top: 0px;
+	width: 5px;
+	height: 10px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+/* =========== WIDESCREEN ========== */
+
+@media screen and (min-width: 480px) {
+    .month {
+        flex-wrap: nowrap;
+    }
+
+    .month h2 {
+        margin: revert;
+        text-align: center;
+        flex-basis: 100%;
+        flex-grow: 1;
+        order: 2;
+    }
+
+    .month input {
+        flex-grow: 1;
+        flex-basis: 30%;
+    }
+
+    .month input[data-tag="prev"] {
+        order: 1;
+    }
+
+    .month input[data-tag="next"] {
+        order: 3;
+    }
+}

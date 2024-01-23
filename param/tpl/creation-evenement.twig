@@ -1,0 +1,129 @@
+{% extends "base.twig" %}
+
+{% block css %}
+    <style>
+        span.obligatoire {
+            color: red;
+        }
+        #heure {
+            width:11%;
+        }
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script>
+        $(document).ready(function() {
+            updateHeure({{ evenement.duree }});
+
+            $(function() {
+
+                var // Define maximum number of files.
+                    max_file_number = 3,
+                    // Define your form id or class or just tag.
+                    $form = $('form'),
+                    // Define your upload field class or id or tag.
+                    $file_upload = $('#pj', $form),
+                    // Define your submit class or id or tag.
+                    $button = $('#valider', $form);
+
+                // Disable submit button on page ready.
+                $button.prop('disabled', 'disabled');
+
+                $file_upload.on('change', function () {
+                    let number_of_images = $(this)[0].files.length;
+                    $("input#filecount").val(number_of_images);
+                    if (number_of_images > max_file_number) {
+                        alert(`Vous pouvez uniquement sélectionner un maximum de ${max_file_number} fichiers.`);
+                        $(this).val('');
+                        $button.prop('disabled', 'disabled');
+                    } else {
+                        $button.prop('disabled', false);
+                    }
+                });
+            });
+        });
+
+        function updateHeure(input) {
+            let val = input;
+            let heure = Math.floor(val);
+            let minute = (val - heure) * 60;
+            $("span#full").html(""+heure+":"+(minute < 10 ? "0" + minute : minute));
+        }
+
+
+    </script>
+{% endblock %}
+
+{% block contenu %}
+    <form action="" method="post" enctype="multipart/form-data">
+        <input type="hidden" id="filecount" name="filecount" value="0">
+        <fieldset>
+            <span>{{ message }}</span>
+            <table>
+                <tr>
+                    <input type=hidden name="id" value="{{ evenement.id }}" >
+                    <td>
+                        Catégorie: <span class="obligatoire">*</span>
+                    </td>
+                    <td>
+                        <select name="Categorie">
+                            {% for type in types %}
+                                <option value="{{ type.id }}" {% if evenement.type == type.id %} selected {% endif %}>{{ type.libelle }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Description du travail: <span class="obligatoire">*</span>
+                    </td>
+                    <td>
+                        <input type="text" name="Description" value="{{ evenement.libelle }}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Séance: <span class="obligatoire">*</span>
+                    </td>
+                    <td>
+                        <select name="seance">
+                            {% for seance in seances %}
+                                <option value="{{ seance.id }}" {% if evenement.seance == seance.id %} selected {% endif %}>{{ seance.objmodule.libelle }} le {{ seance.getDateFormatee("d/m/Y") }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Pièces jointes:</td>
+                    <td><input id="pj" type="file" multiple name="pj[]"></td>
+                </tr>
+                <tr>
+                    <td>
+                        Durée:
+                    </td>
+                    <td>
+                        <input id="heure" type="number" value="{{ evenement == null ? 0 : evenement.duree }}" onchange="updateHeure($(this).val())" step="0.25" name="duree" min="0" style="width: 50px"> heure(s)
+                        (<span id="full">0:00</span>)
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Pour le:
+                    </td>
+                    <td>
+                        <input type="date" name="Date" value="{{date}}" max="{{dateMax}}" min="{{dateMin}}">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        (<span class="obligatoire">*</span> champs obligatoires)
+                    </td>
+                    <td>
+                        <input id="valider" type="submit" name="valider" value="Valider">
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+{% endblock %}

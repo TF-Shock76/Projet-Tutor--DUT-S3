@@ -1,0 +1,61 @@
+{% extends "base.twig"%}
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="/style/debug-table.css">
+{% endblock %}
+
+{% block js %}
+    <script>
+        function verifSuppression(id) {
+            if (confirm('Voulez-vous vraiment supprimer la seance d\'identifiant "' + id + '"?')) {
+                $.post("/api/deleteSeance.php", {id: id},)
+                    .done(function(){
+                        alert("Suppression effectuée avec succès");
+                        document.location.reload()
+                    })
+                    .fail(function(xhr, status, error){alert("Une erreur est survenue lors de la suppression de la séance: " + xhr.responseJSON.error)});
+            } else {
+                alert("Supression annulée");
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block contenu %}
+    <p>
+        <a class="button" href="?id=new">Ajouter une séance</a>
+    </p>
+
+    <table>
+        <tr>
+            <th>id_seance</th>
+            <th>Module</th>
+            <th>Date de création</th>
+			<th>Date de modification</th>
+            <th>Type</th>
+            <th>Groupe</th>
+            <th>Professeur</th>
+            <th colspan="2">Action</th>
+        </tr>
+
+
+        {% for seance in tabSeance %}
+            <tr>
+                <td>{{ seance.id }}</td>
+                <td>{{ tabNomsModules[seance.module] }}</td>
+                <td>{{ seance.getDateCreation() }}</td>
+				<td>{{ seance.getDateModification() }}</td>
+              <!--  <td>{{ seance.getPj() }}</td> -->
+                <td>{{ tabTypesSeance[seance.type] }}</td>
+                <td>{{ seance.groupe }}</td>
+                <td>{{ tabNomsPrenomsProfs[seance.utilisateur] }}</td>
+                <td><a href="?id={{seance.id}}"><img src="/images/edit.png" alt="Modifier la seance"/></a></td>
+                <td><a href="javascript:verifSuppression('{{seance.id}}')"><img src="/images/delete.jpeg" alt="Supprimer la seance"/></a></td>
+
+            </tr>
+        {% endfor %}
+    </table>
+
+
+
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "base-no-menu.twig" %}
+
+{% block css %}
+<style>
+    h1 {
+        margin: 0;
+        text-align: center;
+    }
+
+    .login {
+        width: 400px;
+        margin: auto;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    form > * {
+        margin-top: 2px;
+    }
+
+    form > input {
+        margin-top: 4px;
+    }
+
+    form .buttons {
+        display: flex;
+        flex-direction: row-reverse;
+    }
+
+    form .buttons > * {
+        margin-left: 4px;
+    }
+
+    .erreur {
+        color: red;
+    }
+</style>
+{% endblock %}
+
+{% block contenu %}
+    <div class="block login">
+    <h1>Connexion</h1>
+    <form action="/index.php" method="post">
+        <input type="text" name="login" placeholder="Identifiant"/>
+        <input type="password" name="mdp" placeholder="Mot de passe"/>
+        <span class="erreur">{{Erreur}}</span>
+        <div class="buttons">
+            <input class="button" type="submit" name="ok" value="OK">
+            <input class="button" type="reset" value="Effacer">
+        </div>
+    </form>
+    </div>
+{% endblock %}

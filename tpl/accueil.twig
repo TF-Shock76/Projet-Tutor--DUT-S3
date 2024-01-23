@@ -1,0 +1,40 @@
+{% extends "base.twig" %}
+
+{% block css %}
+<style>
+    h2, p {
+        text-align: center;
+    }
+
+    .select {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+        max-width: 300px;
+        margin: auto;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block contenu %}
+    <h2>Bienvenue, {{ user.getPrenom() }} {{ user.getNom() }} !</h2>
+    <p>
+        Sélectionnez un de ces boutons pour commencer:
+    </p>
+
+	<div class="select">
+
+		{% if 'A' in user.getRole() %}
+
+			<a class="button" href="parametrage.php">Parametrage</a>
+
+		{%endif%}
+
+		<a class="button" href="saisie.php">Saisie</a>
+	    <a class="button" href="etat.php">Visualisation</a>
+
+	</div>
+{% endblock %}

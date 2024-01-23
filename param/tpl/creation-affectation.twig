@@ -1,0 +1,44 @@
+{% extends "base.twig" %}
+
+{% block contenu %}
+
+    <form action="" method="POST">
+        <fieldset>
+            <table>
+                <tr>
+                    <td>
+                        Enseignant:
+                    </td>
+                    <td>
+                        <select name="Enseignant">
+                            {% for user in profs %}
+                                <option value="{{ user.id }}">{{ user.nom }} {{ user.prenom }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Module:
+                    </td>
+                    <td>
+                        <select name="Module">
+                        {% for module in modules %}
+
+                            <option value="{{ module.code }}">{{ module.libelle }}</option>
+
+                        {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="submit" name="Affecter" value="Affecter">
+                    </td>
+                </tr>
+            </table>
+        </fieldset>
+    </form>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+{% extends "base.twig"%}
+
+{% block css %}
+{% endblock %}
+
+
+{% block contenu %}
+
+<form action="" method="POST" class="block">
+    <fieldset>
+        <legend>Inscription</legend>
+        <fieldset>
+            <table>
+                <legend>Données personnelles</legend>
+                <tr>
+                    <th align = "left">id</th>
+                </tr>
+                <tr>
+                    <td><input type="text" name="id" value="{{ usrEdit.id }}"></td>
+                    <td><input type=hidden name="oldId" value="{{ usrEdit.id }}" > </td>
+                </tr>
+                <tr>
+                    <th align = "left">nom</th>
+                    <th align = "left">prenom</th>
+                    <th align = "left">mot de passe</th>
+                </tr>
+                <tr>
+                    <td><input type="text"     name="nom" value="{{ usrEdit.nom }}"></td>
+                    <td><input type="text"     name="prenom" value="{{ usrEdit.prenom }}"></td>
+                    <td><input type="password" name="mdp" ></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend>Attribution</legend>
+            <table>
+
+                <tr>
+                    <th align = "left">roles</th>
+                    <th align = "left">groupe</th>
+                </tr>
+                <tr>
+                    <td>
+                            <input type="radio" name="role" value="A" {%  if usrEdit.roles == "A"  %} checked {% endif %}>Administrateur<br>
+                            <input type="radio" name="role" value="AE"{%  if usrEdit.roles == "AE" %} checked {% endif %}>Administrateur/Enseignant<br>
+                            <input type="radio" name="role" value="E" {%  if usrEdit.roles == "E"  %} checked {% endif %}>Enseignant<br>
+                            <input type="radio" name="role" value="T" {%  if usrEdit.roles == "T"  %} checked {% endif %}>Tuteur<br>
+                    </td>
+                    <td><input type="text" name="groupe" value="{{ usrEdit.groupes }}"></td>
+                </tr>
+            </table>
+        </fieldset>
+        <fieldset>
+            <table>
+                <tr>
+                    <th align = "left">crée le</th>
+                    <th align = "left">mis à jour le</th>
+                </tr>
+                <tr>
+                    <td><input type="date" name="crea" value="{{ usrEdit.getDateCreation() }}" disabled></td>
+                    <td><input type="date" name="maj" value="{{ usrEdit.getDateModification() }}" disabled></td>
+                </tr>
+            </table>
+        </fieldset>
+        <table>
+            <tr>
+                <td><input type="submit" name="ok" value="Valider"></td>
+                <td><input type="reset" name="renit" value="Effacer"></td>
+                <td>{{ErreurInscription}}</td>
+            </tr>
+        </table>
+    </fieldset>
+</form>
+{% endblock %}

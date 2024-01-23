@@ -1,0 +1,52 @@
+{% extends "base.twig"%}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" href="/style/debug-table.css">
+{% endblock %}
+
+{% block js %}
+    <script>
+        function verifSuppression(id) {
+            if (confirm('Voulez-vous vraiment supprimer le type séance "' + id + '"?')) {
+                $.post("/api/deleteTypeSeance.php", {id: id},)
+                    .done(function(){
+                        alert("Suppression effectuée avec succès");
+                        document.location.reload()
+                    })
+                    .fail(function(xhr, status, error){alert("Une erreur est survenue lors de la suppression du type séance: " + xhr.responseJSON.error)});
+            } else {
+                alert("Supression annulée");
+            }
+        }
+    </script>
+{% endblock %}
+
+{% block contenu %}
+    <p>
+        <a class="button" href="?id=new">Créer un type séance</a>
+    </p>
+
+<table>
+    <tr>
+        <th>id</th>
+        <th>libelle</th>
+        <th>roles</th>
+        <th>actif</th>
+        <th colspan="2">Actions</th>
+    </tr>
+
+
+    {% for type in tabTypes %}
+    {% if type.actif %}
+    <tr>
+        <td>{{ type.id }}</td>
+        <td>{{ type.libelle }}</td>
+        <td>{{ type.roles }}</td>
+        <td>{{ type.actif ? "Oui" : "Non" }}</td>
+        <td><a href="?id={{type.id}}"><img src="/images/edit.png" alt="Modifier le type"/></a></td>
+        <td><a href="#" onclick="verifSuppression({{type.id}})"><img src="/images/delete.jpeg" alt="Supprimer le type"/></a></td>
+    </tr>
+    {% endif %}
+    {% endfor %}
+</table>
+{% endblock %}
